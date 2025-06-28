@@ -24,8 +24,6 @@ export default function initSocket(server) {
             try {
                 let msg;
                 try {
-                    console.log(raw.toString());
-
                     msg = JSON.parse(raw.toString());
                 } catch (err) {
                     console.error('Invalid JSON:', raw);
