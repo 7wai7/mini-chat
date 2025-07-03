@@ -2,3 +2,6 @@
 Міні чат в браузері
 
 https://minichat-h5y3.onrender.com
+
+
+![MainPage:](images/MainPage.png)
