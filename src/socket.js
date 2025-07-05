@@ -76,9 +76,10 @@ export default function initSocket(server) {
 
         
         
-        const messages = await db.query(`
+        const result = await db.query(`
             SELECT * FROM messages ORDER BY date DESC LIMIT 20
         `);
+        const messages = result.rows;
 
         ws.send(JSON.stringify({
             type: "get messages",
