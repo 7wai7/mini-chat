@@ -126,7 +126,9 @@ function timeAgo(date) {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const socket = new WebSocket(`wss://${location.host}`);
+    console.log(location);
+    
+    const socket = new WebSocket(`${location.protocol === "http:" ? "ws" : "wss"}://${location.host}`);
 
     socket.addEventListener('open', () => {
         console.log('WebSocket зʼєднання встановлено');

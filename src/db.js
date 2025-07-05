@@ -1,18 +1,26 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+import { Sequelize } from 'sequelize';
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false // потрібне для Render
-    }
-});
+const isRender = process.env.RENDER === "true";
+
+let sequelize;
+
 
 export async function getDb() {
-    return pool;
+    return sequelize;
 }
 
 export async function initDb() {
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: 'postgres',
+        dialectOptions: {
+            ...(isRender && {
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            })
+        }
+    });
+    
     const db = await getDb();
     await db.query(`
         CREATE TABLE IF NOT EXISTS messages (

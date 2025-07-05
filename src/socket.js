@@ -32,7 +32,7 @@ export default function initSocket(server) {
 
                 if (msg.type === "send message") {
                     console.log("Нове повідомлення:", msg.text);
-                    
+
                     const newMessage = {
                         id: Date.now().toString() + "_" + Math.floor(Math.random() * 1e7),
                         sender: msg.name,
@@ -42,9 +42,12 @@ export default function initSocket(server) {
 
 
                     await db.query(
-                        `INSERT INTO messages (id, sender, text, date) VALUES ($1, $2, $3, $4)`,
-                        [newMessage.id, newMessage.sender, newMessage.text, newMessage.date]
+                        `INSERT INTO messages (id, sender, text, date) VALUES (?, ?, ?, ?)`,
+                        {
+                            replacements: [newMessage.id, newMessage.sender, newMessage.text, newMessage.date]
+                        }
                     );
+
 
                     // Розсилка після успішного збереження
                     wss.clients.forEach(client => {
@@ -74,12 +77,11 @@ export default function initSocket(server) {
             console.error('WebSocket помилка:', err);
         });
 
-        
-        
-        const result = await db.query(`
+
+
+        const [messages, metadata] = await db.query(`
             SELECT * FROM messages ORDER BY date DESC LIMIT 20
         `);
-        const messages = result.rows;
 
         ws.send(JSON.stringify({
             type: "get messages",

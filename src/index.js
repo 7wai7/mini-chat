@@ -43,10 +43,9 @@ const server = http.createServer(async (req, res) => {
         if (req.method === "GET" && parsedUrl.pathname === "/api/messages") {
             const offset = req.query.offset || 0;
 
-            const result = await db.query(`
+            const [messages, metadata] = await db.query(`
                 SELECT * FROM messages ORDER BY date DESC LIMIT 20 OFFSET ${offset}
             `);
-            const messages = result.rows;
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
