@@ -1,24 +1,20 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const dbPath = path.join(__dirname, 'chat.db');
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false // потрібне для Render
+    }
+});
 
 export async function getDb() {
-    return open({
-        filename: dbPath,
-        driver: sqlite3.Database
-    });
+    return pool;
 }
 
 export async function initDb() {
     const db = await getDb();
-    await db.exec(`
+    await db.query(`
         CREATE TABLE IF NOT EXISTS messages (
             id TEXT PRIMARY KEY,
             sender TEXT,

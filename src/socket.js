@@ -41,8 +41,8 @@ export default function initSocket(server) {
                     }
 
 
-                    await db.run(
-                        `INSERT INTO messages (id, sender, text, date) VALUES (?, ?, ?, ?)`,
+                    await db.query(
+                        `INSERT INTO messages (id, sender, text, date) VALUES ($1, $2, $3, $4)`,
                         [newMessage.id, newMessage.sender, newMessage.text, newMessage.date]
                     );
 
@@ -76,7 +76,7 @@ export default function initSocket(server) {
 
         
         
-        const messages = await db.all(`
+        const messages = await db.query(`
             SELECT * FROM messages ORDER BY date DESC LIMIT 20
         `);
 

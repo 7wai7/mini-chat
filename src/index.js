@@ -5,11 +5,13 @@ import { dirname } from 'path';
 import { parse } from 'url';
 import { parse as parseQuery } from 'querystring';
 import fs from 'fs';
+import dotenv from 'dotenv';
 import initSocket from './socket.js';
 import { getDb, initDb } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
@@ -41,7 +43,7 @@ const server = http.createServer(async (req, res) => {
         if (req.method === "GET" && parsedUrl.pathname === "/api/messages") {
             const offset = req.query.offset || 0;
 
-            const messages = await db.all(`
+            const messages = await db.query(`
                 SELECT * FROM messages ORDER BY date DESC LIMIT 20 OFFSET ${offset}
             `);
 
